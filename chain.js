@@ -1,51 +1,40 @@
 var block = require("./block.js");
 
-//var block1 = new block(1, "carlos es lo mejor")
-//console.log("Hash -> ", block1.hash.toString())
-//console.log("Nonce ->", block1.nonce.toString())
-
 class chain {
 	constructor() {
 		this.blockChain = []
-		this.perraBlock = {}
 	}
 
 	crearBloque() {
 		if (this.blockChain.length == 0) {
-			this.blockChain.push(new block(this.blockChain.length, ""))
+			this.blockChain.push(new block(this.blockChain.length))
 		} else {
-			this.perraBlock = this.blockChain
-			this.blockChain.push(new block((this.blockChain.length), "", this.blockChain[this.blockChain.length - 1].hash))
+			if (this.blockChain[this.blockChain.length -1 ].data.length == 5) {
+				this.blockChain[this.blockChain.length -1 ].hash = this.blockChain[this.blockChain.length -1 ].setHash()
+				this.blockChain.push(new block((this.blockChain.length), this.blockChain[this.blockChain.length - 1].hash))
+			} else {
+				throw ("se tienen que llenar 5 transacciones antes de empezar un nuevo bloque")
+			}
 		}
 	}
 
-	async registrarData(index, data) {
+	async registrarData(dir1, dir2, data) {
 		try {
-			if (index <= this.blockChain.length) {
-				await this.blockChain[index].setData(data);
-				for (var i = 0; i < this.blockChain.length; i++) {
-					if (i != 0) {
-						this.blockChain[i].prev = this.blockChain[i - 1].hash
-						this.blockChain[i].hash = await this.blockChain[i].setHash();
-					}
-				}
+			if(this.blockChain[this.blockChain.length -1 ].data.length < 5){
+				await this.blockChain[this.blockChain.length -1 ].setData({dir1: dir1, dir2:dir2, data:data});
+			}else{
+				this.crearBloque();
+				await this.blockChain[this.blockChain.length -1].setData({dir1: dir1, dir2:dir2, data:data});
 			}
-			return true;
 		} catch (error) {
 			throw error;
 		}
 	}
 
+	cerrarBloque(){
+		this.blockChain[this.blockChain.length -1 ].setHash()
+	}
+
 }
 
 module.exports = chain;
-
-// var chain1 = new chain();
-
-// chain1.crearBloque();
-// chain1.crearBloque();
-// chain1.crearBloque();
-
-// chain1.registrarData(1, "carlos es lo mejor").then(data=>{
-// 	console.log(chain1.blockChain)
-// })

@@ -1,11 +1,12 @@
 var SHA256 = require("crypto-js/sha256")
+var transaction = require("./transaction")
 class block {
-	constructor(index, data, prev = "0000000000000000000000000000000000000000000000000000000000000000") {
+	constructor(index, prev = "0000000000000000000000000000000000000000000000000000000000000000") {
 		this.index = index;
 		this.nonce = 0;
-		this.data = data;
+		this.data = [];
 		this.prev = prev;
-		this.hash = this.setHash();
+		this.hash = "";
 	}
 
 	setHash() {
@@ -21,8 +22,7 @@ class block {
 	}
 
 	setData(data) {
-		this.data = data;
-		this.hash = this.setHash();
+		this.data.push(new transaction(data.dir1, data.dir2, data.data));
 	}
 
 
