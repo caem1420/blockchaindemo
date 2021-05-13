@@ -12,7 +12,7 @@ class block {
 	setHash() {
 		var hashNew;
 		for (var x = 0; x <= 500000; x++) {
-			hashNew = SHA256(this.index.toString() + x.toString() + this.data.toString() + this.prev.toString()).toString()
+			hashNew = SHA256(this.index.toString() + x.toString() + JSON.stringify(this.data) + this.prev.toString()).toString()
 			if (hashNew.substr(0, 4) === "0000") {
 				this.nonce = x;
 				return hashNew;

@@ -8,6 +8,6 @@ BlockChain.crearBloque();
 console.log(BlockChain.blockChain)
 
 for(var i = 0; i<=10; i++){
-    BlockChain.registrarData("1", "2", "carlos es lo menjor")
+    BlockChain.registrarData("1", "2", "carlos es lo menjor" + i )
 }
-console.log(BlockChain.blockChain)
+console.log(BlockChain.blockChain[0].data)

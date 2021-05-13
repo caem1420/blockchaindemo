@@ -11,13 +11,18 @@ app.use(express.urlencoded({ extended: true }))
 var blockChain = new chain();
 
 app.get("/crearBloque", (req, res) => {
-    blockChain.crearBloque();
-    res.send({ status: true, data: "Exitoso" });
+    try {
+        blockChain.crearBloque();
+        res.send({ status: true, data: "Exitoso" });
+    } catch (error) {
+        res.send(res.send({ status: false, data: error }))
+    }
 })
 
 app.get("/listBlockChain", (req, res) => {
     if (blockChain.blockChain.length != 0) {
-        res.send({ status: true, data: blockChain.blockChain });
+        console.log(JSON.stringify(blockChain.blockChain))
+        res.send({ status: true, data: blockChain.blockChain});
     } else {
         res.send({ status: false, data: "No data" });
     }
@@ -25,28 +30,28 @@ app.get("/listBlockChain", (req, res) => {
 
 
 app.get("/cambiarData", (req, res) => {
-    if ((parseInt(req.query.index) > 0 || parseInt(req.query.index) == 0) && req.query.data) {
-        blockChain.registrarData(parseInt(req.query.index), req.query.data).then(data => {
-            res.send({ status: true, data: "Exitoso" })
-        }).catch(err=>{
-            res.send({ status: false, data: err })
-        })
-    } else {
+    if(req.query.dir1 && req.query.dir2 && req.query.data){
+        blockChain.registrarData(req.query.dir1, req.query.dir2, req.query.data)
+        res.send({ status: true, data: "Exitoso" })
+    }else{
         res.send({ status: false, data: "missing query params" });
     }
 })
 
+
 app.patch("/cambiarData", (req, res) => {
-    if ((parseInt(req.body.index) > 0 || parseInt(req.body.index) == 0) && req.body.data) {
-        blockChain.registrarData(parseInt(req.body.index), req.body.data).then(data => {
+    try {
+        if(req.body.dir1 && req.body.dir2 && req.body.data){
+            blockChain.registrarData(req.body.dir1, req.body.dir2, req.body.data)
             res.send({ status: true, data: "Exitoso" })
-        }).catch(err=>{
-            res.send({ status: false, data: err })
-        })
-    } else {
-        res.send({ status: false, data: "missing query params" });
+        }else{
+            res.send({ status: false, data: "missing query params" });
+        }
+    } catch (error) {
+        res.send(res.send({ status: false, data: error }))
     }
 })
+
 
 
 app.listen(3000)
